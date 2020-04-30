@@ -27,8 +27,6 @@ public class EPGAdapter extends BaseAdapter {
 
     private int currentItem = 0;
 
-    private int curTime = -1;
-
     public EPGAdapter(Context context,IPTVChannel channel) {
         mContext = context;
         this.channel = channel;
@@ -51,36 +49,6 @@ public class EPGAdapter extends BaseAdapter {
         return position;
     }
 
-    public int getCurTime() {
-        return this.curTime;
-    }
-
-    public void getCurrentTimer() {
-        this.curTime = -1;
-        Calendar c = Calendar.getInstance();
-        Date date = c.getTime();
-        for (int i = 0; i < channel.epg.data.size() - 1; i++) {
-            String starttime = channel.epg.data.get(i).starttime;
-            int pos = starttime.indexOf(':');
-            if (pos == -1)
-                continue;
-            int hour = Integer.parseInt(starttime.substring(0,pos));
-            int minute = Integer.parseInt(starttime.substring(pos+1));
-
-//            Log.d(TAG, "getCurrentTimer: "+hour + " m = "+minute);
-
-            Calendar d = Calendar.getInstance();
-            d.set(Calendar.HOUR_OF_DAY,hour);
-            d.set(Calendar.MINUTE,minute);
-            d.set(Calendar.SECOND,0);
-
-            Date date1 = d.getTime();
-            if (date1.after(date)) {
-                break;
-            }
-            this.curTime = i;
-        }
-    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -97,9 +65,11 @@ public class EPGAdapter extends BaseAdapter {
         holder.mTextView.setText(data.name);
         holder.mTimeView.setText(data.starttime);
 
+        channel.epg.getCurrentTimer();
+
 //        this.getCurrentTimer();
 
-        if (this.curTime == position) {
+        if (channel.epg.curTime == position) {
             holder.mLottieAnimationView.setVisibility(View.VISIBLE);
             holder.mLottieAnimationView.playAnimation();
         } else {

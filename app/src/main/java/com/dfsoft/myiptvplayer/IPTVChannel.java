@@ -42,6 +42,8 @@ public class IPTVChannel {
 
     public IPTVEPG epg = new IPTVEPG();
 
+    public int playIndex = 0;
+
     public EPGAdapter epgAdapter = null;
 
     public void loadEPGData() {
@@ -64,7 +66,7 @@ public class IPTVChannel {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-
+                Log.e("IPTVConfig", "接口调用成功");
                 final String strByNet = response.body().string();
                 load(strByNet);
             }
@@ -74,7 +76,8 @@ public class IPTVChannel {
     public void load(String dataString) {
         Gson json = new Gson();
         epg = json.fromJson(dataString, IPTVEPG.class);
-//        Log.d(TAG, "load: "+epg.code+" "+epg.name);
+        if (config.dataEventLister != null)
+            config.dataEventLister.onEPGLoaded(this);
     }
 
 }

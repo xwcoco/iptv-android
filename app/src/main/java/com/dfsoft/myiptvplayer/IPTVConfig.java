@@ -36,7 +36,7 @@ public class IPTVConfig {
 
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
-    public IPTVChannel playingChannal = null;
+    private IPTVChannel playingChannal = null;
 
     private OkHttpClient client = new OkHttpClient();
 
@@ -49,10 +49,22 @@ public class IPTVConfig {
     public interface DataEventLister {
 
         public void onInitData(Boolean isOk);
+        public void onPlayChannel();
+        public void onEPGLoaded(IPTVChannel channel);
 
     }
 
-    private DataEventLister dataEventLister = null;
+    public IPTVChannel getPlayingChannal() {
+        return playingChannal;
+    }
+
+    public void setPlayingChannal(IPTVChannel playingChannal) {
+        this.playingChannal = playingChannal;
+        if (this.dataEventLister != null)
+            this.dataEventLister.onPlayChannel();
+    }
+
+    public DataEventLister dataEventLister = null;
 
     public void setDataEventLister(DataEventLister dataEventLister) {
         this.dataEventLister = dataEventLister;
@@ -115,7 +127,7 @@ public class IPTVConfig {
     }
 
     public IPTVChannel getFirstCanPlayChannel() {
-        if (this.category == null) return;
+        if (this.category == null) return null;
         for (int i = 0; i < category.size()-1; i++) {
             IPTVCategory cate = category.get(i);
             if (cate.data.size() == 0)

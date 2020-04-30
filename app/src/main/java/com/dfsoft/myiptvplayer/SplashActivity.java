@@ -48,4 +48,14 @@ public class SplashActivity extends AppCompatActivity implements IPTVConfig.Data
             this.finish();
         }
     }
+
+    @Override
+    public void onPlayChannel() {
+
+    }
+
+    @Override
+    public void onEPGLoaded(IPTVChannel channel) {
+
+    }
 }

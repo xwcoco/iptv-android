@@ -107,7 +107,7 @@
                 android:focusableInTouchMode="true"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
-                android:text="精彩节目"
+                android:text=""
                 android:textColor="#ffffffff" />
         </LinearLayout>
 

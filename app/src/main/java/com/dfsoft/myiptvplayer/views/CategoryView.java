@@ -113,12 +113,12 @@ public class CategoryView extends FrameLayout {
             if (channel.epgAdapter == null) {
                 channel.epgAdapter = new EPGAdapter(this.mContext, channel);
             }
-            channel.epgAdapter.getCurrentTimer();
+            channel.epg.getCurrentTimer();
 //            mEpgList.smoothScrollToPosition(channel.epgAdapter);
         }
 
         adapter.notifyDataSetChanged();
-        int curtime = channel.epgAdapter.getCurTime();
+        int curtime = channel.epg.curTime;
         mEpgList.setAdapter(channel.epgAdapter);
         if (curtime != -1) {
             int h = mEpgList.getMeasuredHeight() / 2;

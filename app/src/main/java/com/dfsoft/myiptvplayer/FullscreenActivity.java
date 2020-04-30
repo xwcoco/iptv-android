@@ -4,6 +4,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,7 +20,7 @@ import org.videolan.libvlc.util.VLCVideoLayout;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.Callback {
+public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.Callback,IPTVConfig.DataEventLister {
     private String TAG = "FullscreenActivity";
     private TextView mInfoView;
 
@@ -35,6 +37,10 @@ public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.
     private CategoryView mCategoryView = null;
     private View mVideoView = null;
 
+    private HideContent consoleHide = null;
+
+    private ConsoleControl cc = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,11 +52,15 @@ public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.
             actionBar.hide();
         }
 
-
         mVideoView = findViewById(R.id.fullscreen_content);
+        mCategoryView = findViewById(R.id.category_view);
+
+        consoleHide = new HideContent(this,findViewById(R.id.console_view),null);
+
+        cc = new ConsoleControl(this);
+
 
 //        mCategoryView=PopupLayout.init(FullscreenActivity.this, R.layout.layout_category);
-        mCategoryView = findViewById(R.id.category_view);
 //        mCategoryHide = new HideContent(this,findViewById(R.id.fullscreen_category),mCategoryView);
 //
 //        mInfoView = findViewById(R.id.info);
@@ -64,14 +74,13 @@ public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.
 
 
         // Set up the user interaction to manually show or hide the system UI.
-        mVideoView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggle();
-            }
-        });
+//        mVideoView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                toggle();
+//            }
+//        });
 
-        this.initCategory();
         this.initPlayer();
     }
 
@@ -81,34 +90,9 @@ public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.
 
     private IPTVConfig config = IPTVConfig.getInstance();
 
-    private void initCategory() {
-//        this.config.initConfig();
-//        application.android.on('activityCreated', function activityCreated(args) {
-//            android.os.StrictMode.setThreadPolicy(android.os.StrictMode.ThreadPolicy.LAX)
-//        })
-
-//        try {
-//            String ret =  this.config.post(this.config.host+"/data.php","{myiptv:1}");
-//            Log.d(TAG, "initCategory: "+ret);
-//        } catch (IOException e) {
-//            Log.d(TAG, "initCategory: Error!");
-//            e.printStackTrace();
-//        }
-//         this.config.run("")
-//        final List<String> adapterData = new ArrayList<String>();
-//        //存放要显示的数据
-//        for (int i = 0; i < 20; i++) {
-//            adapterData.add("ListItem" + i);
-//        }
-//        //创建ArrayAdapter对象adapter并设置适配器
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-//                android.R.layout.simple_list_item_1, adapterData);
-//        //将LsitView绑定到ArrayAdapter上
-//        mCategoryView.setAdapter(adapter);
-
-    }
 
     private void initPlayer() {
+        this.config.setDataEventLister(this);
 
 //        mPlayer = new IPTVPlayer(this,(VLCVideoLayout)mContentView);
         mPlayer = new IPTVPlayer(this);
@@ -157,11 +141,11 @@ public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.
     public void onConnected(PlaybackService service) {
         mPlayer.setVideoLayout((VLCVideoLayout)mVideoView);
 
-        if (config.playingChannal == null) {
-            config.playingChannal = config.getFirstCanPlayChannel();
+        if (config.getPlayingChannal() == null) {
+            config.setPlayingChannal(config.getFirstCanPlayChannel());
         }
-        if (config.playingChannal != null) {
-            mPlayer.play(config.playingChannal.source.get(0));
+        if (config.getPlayingChannal() != null) {
+            mPlayer.play(config.getPlayingChannal().source.get(0));
         }
 
 //        mPlayer.play("http://101.71.255.229:6610/zjhs/2/10105/index.m3u8?virtualDomain=zjhs.live_hls.zte.com&IASHttpSessionId=OTT3833320200222145900056637");
@@ -185,5 +169,50 @@ public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.
     @Override
     public void onBuffering(float percent) {
 //        showInfo("buffer: "+ percent + "%");
+    }
+
+
+
+    public boolean dealWithKeyDown(int keyCode) {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            consoleHide.toggle();
+            return true;
+        }
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            this.toggle();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.d(TAG, "onKeyDown: "+keyCode);
+        boolean ret = dealWithKeyDown(keyCode);
+        if (ret)
+            return true;
+//        if (keyCode == View.KEY)
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onInitData(Boolean isOk) {
+
+    }
+
+    @Override
+    public void onPlayChannel() {
+        Log.d(TAG, "onPlayChannel: ");
+        cc.showPlayingChannelConsole();
+//        IPTVChannel channel = this.config.getPlayingChannal();
+//        if (channel == null) return;
+
+
+    }
+
+    @Override
+    public void onEPGLoaded(IPTVChannel channel) {
+        if (channel == config.getPlayingChannal())
+            cc.showPlayingChannelConsole();
     }
 }
