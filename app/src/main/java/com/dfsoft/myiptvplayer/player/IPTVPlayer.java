@@ -87,22 +87,24 @@ public class IPTVPlayer implements MediaPlayer.EventListener {
     public void setVideoLayout(VLCVideoLayout layout) {
         mVideoLayout = layout;
         if (mService != null) {
-            Log.d(TAG, "setVideoLayout: ---");
-            if (mService.mMediaPlayer.isPlaying()) {
-                Log.d(TAG, "setVideoLayout: +++");
+//            Log.d(TAG, "setVideoLayout: ---");
+//            if (mService.mMediaPlayer.isPlaying()) {
+//                Log.d(TAG, "setVideoLayout: +++");
                 mService.mMediaPlayer.attachViews(mVideoLayout, null, ENABLE_SUBTITLES, USE_TEXTURE_VIEW);
-                mService.mMediaPlayer.updateVideoSurfaces();
-            }
+//                mService.mMediaPlayer.updateVideoSurfaces();
+//            }
         }
     }
 
     public void play(String url) {
         if (mService != null) {
+//            if (mService.mMediaPlayer.isPlaying())
+//                mService.mMediaPlayer.stop();
             mService.play(url);
 
-            if (mVideoLayout != null) {
-                mService.mMediaPlayer.attachViews(mVideoLayout, null, ENABLE_SUBTITLES, USE_TEXTURE_VIEW);
-            }
+//            if (mVideoLayout != null) {
+//                mService.mMediaPlayer.attachViews(mVideoLayout, null, ENABLE_SUBTITLES, USE_TEXTURE_VIEW);
+//            }
         }
 //        mMediaPlayer.attachViews(mVideoLayout, null, ENABLE_SUBTITLES, USE_TEXTURE_VIEW);
 //

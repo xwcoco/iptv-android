@@ -3,7 +3,11 @@ package com.dfsoft.myiptvplayer;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -20,7 +24,7 @@ import org.videolan.libvlc.util.VLCVideoLayout;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.Callback,IPTVConfig.DataEventLister {
+public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.Callback, IPTVConfig.DataEventLister {
     private String TAG = "FullscreenActivity";
     private TextView mInfoView;
 
@@ -55,11 +59,11 @@ public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.
         mVideoView = findViewById(R.id.fullscreen_content);
         mCategoryView = findViewById(R.id.category_view);
 
-        consoleHide = new HideContent(this,findViewById(R.id.console_view),null);
+        consoleHide = new HideContent(this, findViewById(R.id.console_view), mVideoView);
 
         cc = new ConsoleControl(this);
 
-
+        this.setFullScreen();
 //        mCategoryView=PopupLayout.init(FullscreenActivity.this, R.layout.layout_category);
 //        mCategoryHide = new HideContent(this,findViewById(R.id.fullscreen_category),mCategoryView);
 //
@@ -90,9 +94,20 @@ public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.
 
     private IPTVConfig config = IPTVConfig.getInstance();
 
+    public void setFullScreen() {
+        mVideoView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+    }
+
 
     private void initPlayer() {
         this.config.setDataEventLister(this);
+        this.config.iptvMessage.addMessageListener(this.mHandler);
 
 //        mPlayer = new IPTVPlayer(this,(VLCVideoLayout)mContentView);
         mPlayer = new IPTVPlayer(this);
@@ -108,10 +123,6 @@ public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.
         // created, to briefly hint to the user that UI controls
         // are available.
 //        delayedHide(100);
-    }
-
-    private void toggle() {
-        this.mCategoryView.toggle();
     }
 
 
@@ -139,7 +150,7 @@ public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.
 
     @Override
     public void onConnected(PlaybackService service) {
-        mPlayer.setVideoLayout((VLCVideoLayout)mVideoView);
+        mPlayer.setVideoLayout((VLCVideoLayout) mVideoView);
 
         if (config.getPlayingChannal() == null) {
             config.setPlayingChannal(config.getFirstCanPlayChannel());
@@ -172,14 +183,14 @@ public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.
     }
 
 
-
     public boolean dealWithKeyDown(int keyCode) {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
             consoleHide.toggle();
             return true;
         }
-        if (keyCode == KeyEvent.KEYCODE_ENTER) {
-            this.toggle();
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            mCategoryView.toggle();
+            ;
             return true;
         }
         return false;
@@ -187,11 +198,12 @@ public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.d(TAG, "onKeyDown: "+keyCode);
+        Log.d(TAG, "onKeyDown: " + keyCode);
         boolean ret = dealWithKeyDown(keyCode);
         if (ret)
             return true;
 //        if (keyCode == View.KEY)
+        Log.d(TAG, "onKeyDown: go to next");
         return super.onKeyDown(keyCode, event);
     }
 
@@ -210,9 +222,32 @@ public class FullscreenActivity extends AppCompatActivity implements IPTVPlayer.
 
     }
 
-    @Override
-    public void onEPGLoaded(IPTVChannel channel) {
-        if (channel == config.getPlayingChannal())
-            cc.showPlayingChannelConsole();
-    }
+
+    private Handler mHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            IPTVChannel channel = null;
+            switch (msg.what) {
+                case IPTVMessage.IPTV_EPG_LOADED:
+                    channel = (IPTVChannel) msg.obj;
+                    if (channel == config.getPlayingChannal()) {
+                        cc.showPlayingChannelConsole();
+                    }
+                    mCategoryView.updateEpg(channel);
+                    break;
+                case IPTVMessage.IPTV_CHANNEL_PLAY:
+                    channel = (IPTVChannel) msg.obj;
+                    mVideoView.requestFocus();
+                    mPlayer.play(channel.source.get(0));
+                    break;
+                case IPTVMessage.IPTV_FULLSCREEN:
+                    consoleHide.hide();
+                    break;
+            }
+        }
+
+        ;
+
+    };
 }

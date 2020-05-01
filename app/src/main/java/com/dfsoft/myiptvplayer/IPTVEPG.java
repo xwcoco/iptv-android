@@ -1,7 +1,5 @@
 package com.dfsoft.myiptvplayer;
 
-import com.dfsoft.myiptvplayer.views.IPTVEpgData;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,7 +24,7 @@ public class IPTVEPG {
         this.curTime = -1;
         Calendar c = Calendar.getInstance();
         Date date = c.getTime();
-        for (int i = 0; i < this.data.size() - 1; i++) {
+        for (int i = 0; i < this.data.size(); i++) {
             String starttime = data.get(i).starttime;
             int pos = starttime.indexOf(':');
             if (pos == -1)

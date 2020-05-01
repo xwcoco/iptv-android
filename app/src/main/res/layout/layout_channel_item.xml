@@ -7,12 +7,11 @@
         android:id="@+id/cate_channel_id"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="10dp"
         android:ellipsize="marquee"
+
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"
-        android:background="@color/none"
-        android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:textColor="@drawable/item_cate_color"
+        android:textSize="18sp" />
 
 </LinearLayout>

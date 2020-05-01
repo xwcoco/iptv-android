@@ -1,7 +1,6 @@
 package com.dfsoft.myiptvplayer.views;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,19 +8,16 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.dfsoft.myiptvplayer.IPTVCategory;
 import com.dfsoft.myiptvplayer.IPTVChannel;
 import com.dfsoft.myiptvplayer.IPTVConfig;
+import com.dfsoft.myiptvplayer.IPTVEpgData;
 import com.dfsoft.myiptvplayer.R;
-
-import java.util.Calendar;
-import java.util.Date;
 
 public class EPGAdapter extends BaseAdapter {
     private final String TAG = "EPGAdapter";
     private IPTVConfig config = IPTVConfig.getInstance();
 
-    private IPTVChannel channel = null;
+    public IPTVChannel channel = null;
 
     private Context mContext;
 

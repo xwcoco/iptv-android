@@ -2,6 +2,7 @@ package com.dfsoft.myiptvplayer;
 
 import android.util.Log;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -73,11 +74,14 @@ public class IPTVChannel {
         });
     }
 
+
     public void load(String dataString) {
         Gson json = new Gson();
         epg = json.fromJson(dataString, IPTVEPG.class);
-        if (config.dataEventLister != null)
-            config.dataEventLister.onEPGLoaded(this);
+        if (!this.epg.isEmpty()) {
+            config.iptvMessage.sendMessage(IPTVMessage.IPTV_EPG_LOADED,this);
+        }
+
     }
 
 }

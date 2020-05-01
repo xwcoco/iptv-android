@@ -5,8 +5,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.dfsoft.myiptvplayer.views.IPTVEpgData;
-
 public class ConsoleControl {
     private final  String TAG = "ConsoleControl";
     private AppCompatActivity mMainView;
@@ -34,7 +32,7 @@ public class ConsoleControl {
 
         tv_channelnum.setText(String.valueOf(channel.num));
         tv_channelname.setText(channel.name);
-        String tmp = "源 " + String.valueOf(channel.playIndex) + " / " + String.valueOf(channel.source.size());
+        String tmp = String.valueOf(channel.playIndex) + " / " + String.valueOf(channel.source.size());
         tv_srcinfo.setText(tmp);
 
 

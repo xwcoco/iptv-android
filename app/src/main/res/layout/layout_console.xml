@@ -1,141 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
+    android:layout_width="450dp"
+    android:layout_height="140dp"
+    android:orientation="vertical"
+    >
 
     <LinearLayout
-        android:layout_width="0.0dip"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="3.0"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginStart="50dp"
+        >
+
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_gravity="start"
+            android:layout_marginStart="0dp">
 
             <TextView
                 android:id="@+id/tv_channelnum"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10.0dip"
-                android:text="1"
-                android:textColor="#ffffffff" />
-
-            <TextView
-                android:id="@+id/tv_channelname"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30.0dip"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:text="200"
+                android:textAlignment="center"
+                android:textColor="@color/white"
                 android:ellipsize="marquee"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:gravity="start"
                 android:marqueeRepeatLimit="marquee_forever"
-                android:singleLine="true"
-                android:text="CCTV-1"
-                android:textColor="#ffffffff" />
+
+                android:textSize="60sp" />
+
+
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginTop="5.0dip"
-            android:gravity="start"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableStart="@drawable/setting"
-                android:gravity="center"
-                android:padding="5.0dip"
-                android:text="设置"
-                android:textColor="#ffffffff" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableStart="@drawable/channellist"
-                android:gravity="center"
-                android:padding="5.0dip"
-                android:text="频道列表"
-                android:textColor="#ffffffff" />
-
-            <TextView
-                android:id="@+id/tv_srcinfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20.0dip"
-                android:gravity="start|center"
-                android:padding="5.0dip"
-                android:text="源1/1"
-                android:textColor="#ffffffff" />
-        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_epginfo"
-        android:layout_width="0.0dip"
-        android:layout_height="fill_parent"
-        android:layout_marginStart="30.0dip"
-        android:layout_weight="2.0"
-        android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="-15dp"
+        android:background="@color/black_overlay"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="0.0dip"
-            android:layout_weight="1.0"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_width="100dp"
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tv_curepg_left"
-                android:layout_width="wrap_content"
+            <com.dfsoft.myiptvplayer.views.MarqueeTextView
+                android:id="@+id/tv_channelname"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="当前节目："
-                android:textColor="#ffffffff" />
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:paddingTop="20dp"
+                android:text="CCTV-1"
+                android:textAlignment="center"
+                android:textColor="@color/lightwhite"
+                android:textSize="25sp" />
+        </LinearLayout>
 
-            <TextView
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="-5dp"
+            android:orientation="vertical">
+            <com.dfsoft.myiptvplayer.views.MarqueeTextView
+                android:layout_marginTop="20dp"
                 android:id="@+id/tv_epgcurrent"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
-                android:text=""
-                android:textColor="#ffffffff" />
-        </LinearLayout>
+                android:textSize="14sp"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="0.0dip"
-            android:layout_weight="1.0"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_nextepg_left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="下个节目："
-                android:textColor="#ffffffff" />
-
-            <TextView
+                android:textColor="@color/white"
+                />
+            <LinearLayout
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ff333333" />
+            <com.dfsoft.myiptvplayer.views.MarqueeTextView
                 android:id="@+id/tv_epgnext"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:marqueeRepeatLimit="marquee_forever"
+                android:textSize="14sp"
                 android:singleLine="true"
-                android:text="下个节目：精彩节目"
-                android:textColor="#ffffffff" />
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="0dp"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+
+                    android:id="@+id/tv_srcinfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1 / 1"
+                    android:textSize="12sp"
+                    android:textColor="@color/lightgreen2"
+                    />
+            </LinearLayout>
         </LinearLayout>
+
+
     </LinearLayout>
+
 </LinearLayout>
+

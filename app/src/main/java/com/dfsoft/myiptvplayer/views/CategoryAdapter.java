@@ -66,10 +66,12 @@ public class CategoryAdapter extends BaseAdapter {
         if (currentItem == position) {
             //如果被点击，设置当前TextView被选中
             holder.mTextView.setSelected(true);
+            holder.mTextView.setPressed(true);
             holder.mTextView.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
         } else {
             //如果没有被点击，设置当前TextView未被选中
             holder.mTextView.setSelected(false);
+            holder.mTextView.setPressed(false);
             holder.mTextView.setTextColor(mContext.getResources().getColor(R.color.white));
         }
 

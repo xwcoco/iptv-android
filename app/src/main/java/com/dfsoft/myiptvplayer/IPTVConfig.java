@@ -3,6 +3,7 @@ package com.dfsoft.myiptvplayer;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.google.gson.Gson;
@@ -42,6 +43,8 @@ public class IPTVConfig {
 
     public ArrayList<IPTVCategory> category = new ArrayList<>();
 
+    public IPTVMessage iptvMessage = new IPTVMessage();
+
 
     private IPTVConfig() {
     }
@@ -50,8 +53,6 @@ public class IPTVConfig {
 
         public void onInitData(Boolean isOk);
         public void onPlayChannel();
-        public void onEPGLoaded(IPTVChannel channel);
-
     }
 
     public IPTVChannel getPlayingChannal() {
@@ -74,7 +75,7 @@ public class IPTVConfig {
         return _instance;
     }
 
-    public String host = "http://192.168.2.11:8080";
+    public String host = "http://192.168.50.8:8080";
 
     public String run(String url) throws IOException {
         Request request = new Request.Builder()
@@ -128,11 +129,11 @@ public class IPTVConfig {
 
     public IPTVChannel getFirstCanPlayChannel() {
         if (this.category == null) return null;
-        for (int i = 0; i < category.size()-1; i++) {
+        for (int i = 0; i < category.size(); i++) {
             IPTVCategory cate = category.get(i);
             if (cate.data.size() == 0)
                 continue;
-            for (int j = 0; j < cate.data.size()-1; j++) {
+            for (int j = 0; j < cate.data.size(); j++) {
                 IPTVChannel channel = cate.data.get(j);
                 if (channel.source.size() == 0 )
                     continue;
@@ -203,4 +204,12 @@ public class IPTVConfig {
         });
     }
 
+    public IPTVCategory getCategoryByChannel(IPTVChannel channel) {
+        for (int i = 0; i < this.category.size(); i++) {
+            IPTVCategory cate = category.get(i);
+            if (cate.data.indexOf(channel) != -1)
+                return cate;
+        }
+        return null;
+    }
 }

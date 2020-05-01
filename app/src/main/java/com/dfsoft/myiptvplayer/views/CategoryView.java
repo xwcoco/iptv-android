@@ -1,8 +1,13 @@
 package com.dfsoft.myiptvplayer.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,6 +20,7 @@ import androidx.annotation.Nullable;
 import com.dfsoft.myiptvplayer.IPTVCategory;
 import com.dfsoft.myiptvplayer.IPTVChannel;
 import com.dfsoft.myiptvplayer.IPTVConfig;
+import com.dfsoft.myiptvplayer.IPTVMessage;
 import com.dfsoft.myiptvplayer.R;
 
 public class CategoryView extends FrameLayout {
@@ -60,6 +66,7 @@ public class CategoryView extends FrameLayout {
         mCateList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "onItemSelected: "+position);
                 activeCategory(position);
             }
 
@@ -87,6 +94,12 @@ public class CategoryView extends FrameLayout {
 
             }
         });
+
+
+        mCateList.setOnFocusChangeListener(this.mCateFocusChangeListener);
+
+        mChannelList.setOnKeyListener(mKeyListener);
+
     }
 
     public void activeCategory(int index) {
@@ -123,28 +136,95 @@ public class CategoryView extends FrameLayout {
         if (curtime != -1) {
             int h = mEpgList.getMeasuredHeight() / 2;
             mEpgList.setSelectionFromTop(curtime,h);
-//            mEpgList.setSelection(curtime);
-//            mEpgList.smoothScrollToPositionFromTop(curtime,2);
-//            mEpgList.smoothScrollToPosition(curtime);
         }
-//        int cateindex = mCategoryAdapter.getCurrentItem();
-//        mChannelList.getAdapter()
+    }
+
+    private void showCurrentChannel() {
+        IPTVChannel channel = config.getPlayingChannal();
+        if (channel == null) return;
+        IPTVCategory cate = config.getCategoryByChannel(channel);
+        if (cate == null) return;
+        int index = config.category.indexOf(cate);
+        int h1 = mCateList.getMeasuredHeight() / 2;
+        mCateList.setSelectionFromTop(index,h1);
+        this.activeCategory(index);
+        index = cate.data.indexOf(channel);
+        this.activeChannel(index);
+        int h = mChannelList.getMeasuredHeight() / 2;
+        mChannelList.setSelectionFromTop(index,h);
+//        mChannelList.setFocusable(true);
+        mChannelList.requestFocus();
     }
 
     public void show() {
         this.setVisibility(View.VISIBLE);
+        this.showCurrentChannel();
         this.mVisible = true;
     }
 
     public void hide() {
         this.setVisibility(View.GONE);
+//        mChannelList.setFocusable(false);
         this.mVisible = false;
+        config.iptvMessage.sendMessage(IPTVMessage.IPTV_FULLSCREEN);
     }
 
     public void toggle() {
+        Log.d(TAG, "onKey: toggle mVisible = "+mVisible);
         if (this.mVisible) {
             this.hide();
         } else
             this.show();
     }
+
+    public void updateEpg(IPTVChannel channel) {
+        if (channel.epgAdapter != null)
+            channel.epgAdapter.notifyDataSetChanged();
+
+        EPGAdapter adapter = (EPGAdapter) mEpgList.getAdapter();
+        if (adapter != null && adapter.channel == channel) {
+            channel.epg.getCurrentTimer();
+            int curtime = channel.epg.curTime;
+            if (curtime != -1) {
+                int h = mEpgList.getMeasuredHeight() / 2;
+                mEpgList.setSelectionFromTop(curtime, h);
+            }
+
+        }
+
+    }
+
+    private OnKeyListener mKeyListener = new OnKeyListener() {
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if (!mVisible) return false;
+            Log.d(TAG, "onKey: "+keyCode + " mVisible = "+mVisible);
+            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+                hide();
+                ChannelAdapter adapter = (ChannelAdapter) mChannelList.getAdapter();
+                if (adapter != null)
+                    config.iptvMessage.sendMessage(IPTVMessage.IPTV_CHANNEL_PLAY,adapter.getChannel());
+                return true;
+            }
+            if (keyCode == KeyEvent.KEYCODE_ESCAPE || keyCode == KeyEvent.KEYCODE_DEL) {
+                hide();
+                return true;
+            }
+            return false;
+        }
+    };
+
+    private OnFocusChangeListener mCateFocusChangeListener = new OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (hasFocus)  {
+                mEpgList.setVisibility(View.GONE);
+            } else {
+                mEpgList.setVisibility(View.VISIBLE);
+            }
+            Log.d(TAG, "onFocusChange: "+hasFocus);
+        }
+    };
+
+
 }

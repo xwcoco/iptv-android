@@ -1,4 +1,4 @@
-package com.dfsoft.myiptvplayer.views;
+package com.dfsoft.myiptvplayer;
 
 public class IPTVEpgData {
     public String name = "";

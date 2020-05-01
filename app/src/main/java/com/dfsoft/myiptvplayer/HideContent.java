@@ -76,10 +76,10 @@ public class HideContent {
 
     public void hide() {
         // Hide UI first
-        ActionBar actionBar = mainview.getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
+//        ActionBar actionBar = mainview.getSupportActionBar();
+//        if (actionBar != null) {
+//            actionBar.hide();
+//        }
         mControlsView.setVisibility(View.GONE);
         mVisible = false;
 
@@ -90,9 +90,9 @@ public class HideContent {
 
     public void show() {
         // Show the system bar
-        if (mContentView != null)
-            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+//        if (mContentView != null)
+//            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         mVisible = true;
 
         // Schedule a runnable to display UI elements after a delay
